@@ -121,7 +121,27 @@ the `"will_expire":"running"` events for a specific event type but render the
 
 ## Alternatives
 
+[MSC4018](https://github.com/matrix-org/matrix-spec-proposals/pull/4018) also
+proposes a way to make call memberships reliable. It uses the client sync loop as
+an indicator to determine if the event is expired. Instead of letting the SFU
+inform about the call termination or using the call app ping loop like we propose
+here.
+
 ## Security considerations
+
+We are using unauthenticated endpoint to refresh the expirations. Since we use
+the token it is hard to guess a correct endpoint and randomly end `will_expire`
+events.
+
+It is an intential decision to not provice an endpoint like
+`PUT /_matrix/client/v3/expiration/room/{roomId}/event/{eventId}`
+where any client with access to the room could also `end` or `refresh`
+the expiration. With the token the client sending the event has ownership
+over the expiration and only intentional delegation of that ownership
+(sharing the token) is possible.
+
+On the other hand the token makes sure that the instance gets as little
+information about the matrix metadata of the associated `will_expire` event.
 
 ## Unstable prefix
 
